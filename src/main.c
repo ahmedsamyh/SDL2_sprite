@@ -1,7 +1,5 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #define SPRITE_IMPLEMENTATION
 #include "sprite.h"
 
@@ -62,6 +60,9 @@ int main(int argc, char *argv[]) {
       }
 
       if (e.type == SDL_KEYDOWN) {
+        if (e.key.keysym.sym == SDLK_SPACE) {
+          Sprite_change_vframe(spr, spr->vframe + 1);
+        }
       }
     }
 
@@ -83,9 +84,6 @@ int main(int argc, char *argv[]) {
     }
     if (keys[SDL_SCANCODE_LEFT]) {
       spr->x -= speed * dt;
-    }
-    if (keys[SDL_SCANCODE_SPACE]) {
-      spr->rotation += (speed * 0.5f) * dt;
     }
 
     Sprite_animate(spr, dt);

@@ -2,6 +2,9 @@
 #define _SPRITE_SDL2_H_
 
 #include <SDL2/SDL.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#include <stdio.h>
 
 typedef struct {
   SDL_Texture *texture;
@@ -65,22 +68,24 @@ void Sprite_animate(Sprite *spr, const float delta);
  *
  * \sa Sprite_change_vframe
  */
-void Sprite_change_hframe(Sprite *spr);
+void Sprite_change_hframe(Sprite *spr, int hframe);
 /**
  * Change the hframe of the Sprite.
  *
  * \param spr the Sprite to change the hframe of
+ * \param hframe the hframe to change to
  *
  * Do not change the hframe manually, use this function instead. Because the
  * frame_rect also needs to be updated.
  *
  * \sa Sprite_change_vframe
  */
-void Sprite_change_vframe(Sprite *spr);
+void Sprite_change_vframe(Sprite *spr, int vframe);
 /**
  * Change the vframe of the Sprite.
  *
  * \param spr the Sprite to change the vframe of
+ * \param vframe the vframe to change to
  *
  * Do not change the vframe manually, use this function instead. Because the
  * frame_rect also needs to be updated.
@@ -136,7 +141,7 @@ Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
   // update frame width
   spr->width = (spr->actual_width / spr->hframes);
   spr->height = (spr->actual_height / spr->vframes);
-  Sprite_change_hframe(spr);
+  Sprite_change_hframe(spr, spr->hframe);
 
   return spr;
 }
@@ -166,14 +171,34 @@ void Sprite_animate(Sprite *spr, const float delta) {
     if (spr->hframe >= spr->hframes)
       spr->hframe = 0;
 
-    Sprite_change_hframe(spr);
+    Sprite_change_hframe(spr, spr->hframe);
   }
 }
-void Sprite_change_hframe(Sprite *spr) {
+void Sprite_change_hframe(Sprite *spr, int hframe) {
   // just to be safe ^^
   if (spr == NULL || spr->texture == NULL || spr->pixels == NULL)
     return;
 
+  if (hframe < 0)
+    hframe = spr->hframes - 1;
+  if (hframe > spr->hframes - 1)
+    hframe = 0;
+  spr->hframe = hframe;
+  spr->frame_rect.x = (spr->hframe * spr->width);
+  spr->frame_rect.y = (spr->vframe * spr->height);
+  spr->frame_rect.w = spr->width;
+  spr->frame_rect.h = spr->height;
+}
+void Sprite_change_vframe(Sprite *spr, int vframe) {
+  // just to be safe ^^
+  if (spr == NULL || spr->texture == NULL || spr->pixels == NULL)
+    return;
+
+  if (vframe < 0)
+    vframe = spr->vframes - 1;
+  if (vframe > spr->vframes - 1)
+    vframe = 0;
+  spr->vframe = vframe;
   spr->frame_rect.x = (spr->hframe * spr->width);
   spr->frame_rect.y = (spr->vframe * spr->height);
   spr->frame_rect.w = spr->width;
