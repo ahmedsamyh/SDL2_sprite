@@ -22,10 +22,71 @@ typedef struct {
 
 Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
                     int vframes);
+
+/**
+ * Loads texture data from a file and initializes a sprite.
+ *
+ * \param rend the SDL_Renderer that will be used to render the sprite
+ * \param filepath the path of the image to load
+ * \param hframes total number of horizontal frames
+ * \param vframes total number of vertical frames
+ * \returns a pointer to a Sprite that is allocated on the heap (which is freed
+ * using Sprite_free)
+ *
+ * \sa Sprite_free
+ */
 void Sprite_free(Sprite *spr);
+/**
+ * Frees the pixel data, texture and the sprite itself.
+ *
+ * \param spr the Sprite to be freed
+ */
 void Sprite_draw(Sprite *spr);
+/**
+ * Draw the sprite on the SDL_Renderer that is passed to Sprite_load
+ *
+ * \param spr the Sprite to draw
+ *
+ * \sa Sprite_load
+ */
 void Sprite_animate(Sprite *spr, const float delta);
-void Sprite__update_frame(Sprite *spr);
+/**
+ * Animate the sprite.
+ *
+ * \param spr the Sprite to animate
+ * \param delta the delta time that is used to animate (for smoothness in
+ * varying fps)
+ *
+ * This function only animates the hframe of the Sprite. The default time for
+ * each frame is 0.25s, to change the speed, change the hspeed variable of the
+ * Sprite object. vframe is only for change the 'state' of a Sprite. Use
+ * Sprite_change_vframe() to change it. **DO NOT CHANGE THE vframe OF THE SPRITE
+ * MANUALLY**.
+ *
+ * \sa Sprite_change_vframe
+ */
+void Sprite_change_hframe(Sprite *spr);
+/**
+ * Change the hframe of the Sprite.
+ *
+ * \param spr the Sprite to change the hframe of
+ *
+ * Do not change the hframe manually, use this function instead. Because the
+ * frame_rect also needs to be updated.
+ *
+ * \sa Sprite_change_vframe
+ */
+void Sprite_change_vframe(Sprite *spr);
+/**
+ * Change the vframe of the Sprite.
+ *
+ * \param spr the Sprite to change the vframe of
+ *
+ * Do not change the vframe manually, use this function instead. Because the
+ * frame_rect also needs to be updated.
+ *
+ * \sa Sprite_change_hframe
+ */
 
 #endif /* _SPRITE_SDL2_H_ */
 
@@ -75,7 +136,7 @@ Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
   // update frame width
   spr->width = (spr->actual_width / spr->hframes);
   spr->height = (spr->actual_height / spr->vframes);
-  Sprite__update_frame(spr);
+  Sprite_change_hframe(spr);
 
   return spr;
 }
@@ -105,10 +166,10 @@ void Sprite_animate(Sprite *spr, const float delta) {
     if (spr->hframe >= spr->hframes)
       spr->hframe = 0;
 
-    Sprite__update_frame(spr);
+    Sprite_change_hframe(spr);
   }
 }
-void Sprite__update_frame(Sprite *spr) {
+void Sprite_change_hframe(Sprite *spr) {
   // just to be safe ^^
   if (spr == NULL || spr->texture == NULL || spr->pixels == NULL)
     return;
