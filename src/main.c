@@ -88,6 +88,8 @@ int main(int argc, char *argv[]) {
       spr->rotation += (speed * 0.5f) * dt;
     }
 
+    Sprite_animate(spr, dt);
+
     Sprite_draw(spr);
 
     // display

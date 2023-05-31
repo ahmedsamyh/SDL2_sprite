@@ -9,11 +9,14 @@ typedef struct {
   int actual_width, actual_height, components;
   SDL_Rect frame_rect;
   int vframes, hframes, hframe, vframe;
+  float hspeed;
   float x, y;
   int width, height;
   float scale_x, scale_y;
   SDL_FPoint origin;
   float rotation;
+  float time_per_each_frame;
+  float accumulated_time;
   SDL_Renderer *rend_ptr;
 } Sprite;
 
@@ -21,7 +24,7 @@ Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
                     int vframes);
 void Sprite_free(Sprite *spr);
 void Sprite_draw(Sprite *spr);
-void Sprite_update(Sprite *spr, float delta);
+void Sprite_animate(Sprite *spr, const float delta);
 void Sprite__update_frame(Sprite *spr);
 
 #endif /* _SPRITE_SDL2_H_ */
@@ -36,11 +39,14 @@ Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
   spr->rend_ptr = rend;
   spr->hframes = hframes;
   spr->vframes = vframes;
+  spr->hspeed = 1.f;
   spr->scale_x = 1.f;
   spr->scale_y = 1.f;
   spr->rotation = 0.f;
   spr->origin.x = 0.5f;
   spr->origin.y = 0.5f;
+  spr->time_per_each_frame = 0.25f;
+  spr->accumulated_time = 0.f;
 
   // load pixel data from filesystem
   spr->pixels = stbi_load(filepath, &spr->actual_width, &spr->actual_height,
@@ -90,7 +96,18 @@ void Sprite_draw(Sprite *spr) {
   SDL_RenderCopyExF(spr->rend_ptr, spr->texture, &spr->frame_rect, &dstrect,
                     spr->rotation, &actual_origin, SDL_FLIP_NONE);
 }
-void Sprite_update(Sprite *spr, float delta) {}
+void Sprite_animate(Sprite *spr, const float delta) {
+  spr->accumulated_time += delta * spr->hspeed;
+  if (spr->accumulated_time >= spr->time_per_each_frame) {
+    spr->accumulated_time -= spr->time_per_each_frame;
+
+    spr->hframe++;
+    if (spr->hframe >= spr->hframes)
+      spr->hframe = 0;
+
+    Sprite__update_frame(spr);
+  }
+}
 void Sprite__update_frame(Sprite *spr) {
   // just to be safe ^^
   if (spr == NULL || spr->texture == NULL || spr->pixels == NULL)
