@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  spr->scale_x = 8;
-  spr->scale_y = 8;
+  spr->scale.x = 8;
+  spr->scale.y = 8;
 
   int speed = 500;
 
@@ -74,16 +74,16 @@ int main(int argc, char *argv[]) {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
     if (keys[SDL_SCANCODE_DOWN]) {
-      spr->y += speed * dt;
+      spr->pos.y += speed * dt;
     }
     if (keys[SDL_SCANCODE_UP]) {
-      spr->y -= speed * dt;
+      spr->pos.y -= speed * dt;
     }
     if (keys[SDL_SCANCODE_RIGHT]) {
-      spr->x += speed * dt;
+      spr->pos.x += speed * dt;
     }
     if (keys[SDL_SCANCODE_LEFT]) {
-      spr->x -= speed * dt;
+      spr->pos.x -= speed * dt;
     }
 
     Sprite_animate(spr, dt);

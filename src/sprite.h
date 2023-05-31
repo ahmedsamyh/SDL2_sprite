@@ -5,6 +5,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <stdio.h>
+#ifndef VEC_IMPLEMENTATION
+#define VEC_IMPLEMENTATION
+#include <vec.h>
+#endif
 
 typedef struct {
   SDL_Texture *texture;
@@ -13,9 +17,9 @@ typedef struct {
   SDL_Rect frame_rect;
   int vframes, hframes, hframe, vframe;
   float hspeed;
-  float x, y;
+  Vec2f pos;
   int width, height;
-  float scale_x, scale_y;
+  Vec2f scale;
   SDL_FPoint origin;
   float rotation;
   float time_per_each_frame;
@@ -106,8 +110,8 @@ Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
   spr->hframes = hframes;
   spr->vframes = vframes;
   spr->hspeed = 1.f;
-  spr->scale_x = 1.f;
-  spr->scale_y = 1.f;
+  spr->scale.x = 1.f;
+  spr->scale.y = 1.f;
   spr->rotation = 0.f;
   spr->origin.x = 0.5f;
   spr->origin.y = 0.5f;
@@ -153,10 +157,10 @@ void Sprite_free(Sprite *spr) {
 void Sprite_draw(Sprite *spr) {
   ///
   SDL_FRect dstrect = {
-      .x = spr->x - (spr->origin.x * (spr->width * spr->scale_x)),
-      .y = spr->y - (spr->origin.y * (spr->height * spr->scale_y)),
-      .w = spr->width * spr->scale_x,
-      .h = spr->height * spr->scale_y};
+      .x = spr->pos.x - (spr->origin.x * (spr->width * spr->scale.x)),
+      .y = spr->pos.y - (spr->origin.y * (spr->height * spr->scale.y)),
+      .w = spr->width * spr->scale.x,
+      .h = spr->height * spr->scale.y};
   SDL_FPoint actual_origin = {.x = spr->origin.x * dstrect.w,
                               .y = spr->origin.y * dstrect.h};
   SDL_RenderCopyExF(spr->rend_ptr, spr->texture, &spr->frame_rect, &dstrect,
