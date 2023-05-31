@@ -22,5 +22,5 @@ Note: You can also open the VS solution file (.sln) directly and build with Visu
 
 # References:
 
-SDL2: http://libsdl.org/
-stb-style header-only library: https://github.com/nothings/stb
+- SDL2: http://libsdl.org/
+- stb-style header-only library: https://github.com/nothings/stb
