@@ -29,6 +29,7 @@ int main(int argc, char *argv[]) {
   rend = SDL_CreateRenderer(
       win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+  // load sprite
   spr = Sprite_load(rend, "player.png", 2, 4);
 
   if (spr == NULL) {
@@ -82,6 +83,9 @@ int main(int argc, char *argv[]) {
     }
     if (keys[SDL_SCANCODE_LEFT]) {
       spr->x -= speed * dt;
+    }
+    if (keys[SDL_SCANCODE_SPACE]) {
+      spr->rotation += (speed * 0.5f) * dt;
     }
 
     Sprite_draw(spr);

@@ -36,6 +36,11 @@ Sprite *Sprite_load(SDL_Renderer *rend, const char *filepath, int hframes,
   spr->rend_ptr = rend;
   spr->hframes = hframes;
   spr->vframes = vframes;
+  spr->scale_x = 1.f;
+  spr->scale_y = 1.f;
+  spr->rotation = 0.f;
+  spr->origin.x = 0.5f;
+  spr->origin.y = 0.5f;
 
   // load pixel data from filesystem
   spr->pixels = stbi_load(filepath, &spr->actual_width, &spr->actual_height,
@@ -75,12 +80,15 @@ void Sprite_free(Sprite *spr) {
 }
 void Sprite_draw(Sprite *spr) {
   ///
-  SDL_FRect dstrect = {.x = spr->x,
-                       .y = spr->y,
-                       .w = spr->width * spr->scale_x,
-                       .h = spr->height * spr->scale_y};
+  SDL_FRect dstrect = {
+      .x = spr->x - (spr->origin.x * (spr->width * spr->scale_x)),
+      .y = spr->y - (spr->origin.y * (spr->height * spr->scale_y)),
+      .w = spr->width * spr->scale_x,
+      .h = spr->height * spr->scale_y};
+  SDL_FPoint actual_origin = {.x = spr->origin.x * dstrect.w,
+                              .y = spr->origin.y * dstrect.h};
   SDL_RenderCopyExF(spr->rend_ptr, spr->texture, &spr->frame_rect, &dstrect,
-                    spr->rotation, &spr->origin, SDL_FLIP_NONE);
+                    spr->rotation, &actual_origin, SDL_FLIP_NONE);
 }
 void Sprite_update(Sprite *spr, float delta) {}
 void Sprite__update_frame(Sprite *spr) {
@@ -93,5 +101,4 @@ void Sprite__update_frame(Sprite *spr) {
   spr->frame_rect.w = spr->width;
   spr->frame_rect.h = spr->height;
 }
-
 #endif
