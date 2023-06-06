@@ -66,7 +66,7 @@ void Sprite_animate(Sprite *spr, const float delta);
  *
  * This function only animates the hframe of the Sprite. The default time for
  * each frame is 0.25s, to change the speed, change the hspeed variable of the
- * Sprite object. vframe is only for change the 'state' of a Sprite. Use
+ * Sprite object. vframe is only to change the 'state' of a Sprite. Use
  * Sprite_change_vframe() to change it. **DO NOT CHANGE THE vframe OF THE SPRITE
  * MANUALLY**.
  *
