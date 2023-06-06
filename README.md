@@ -18,6 +18,7 @@ Note: You can also open the VS solution file (.sln) directly and build with Visu
 
 - [premake5 (version 5.0.0-beta2 and up)](https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip)
 - [Visual Studio 17.4.4 (2022)](https://visualstudio.microsoft.com/vs/community/) with (Desktop development with C++ Workload Installed)
+- [SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.26.5)
 - [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
 - [my vec library](https://github.com/ahmedsamyh/vec/blob/main/src/vec.h)
 
